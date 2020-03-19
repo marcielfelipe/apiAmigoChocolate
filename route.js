@@ -24,7 +24,7 @@ route.put('/usuario',UsuarioController.edit);
 route.delete('/usuario/:_id',UsuarioController.delete);
 
 //grupo
-route.get('/grupo',GrupoController.index);
+route.get('/grupo',auth,GrupoController.index);
 route.get('/grupo/:_id',GrupoController.getGrupo);
 route.post('/grupo',GrupoValidationRules(),validate, GrupoController.create);
 route.put('/grupo',GrupoController.edit);

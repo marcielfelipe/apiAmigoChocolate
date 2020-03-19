@@ -41,6 +41,7 @@ module.exports={
         return response.json(GrupoRetorno);
     },
     async deleteParticipante(request,response){
+        let{_id}=request.params;
     },
     async sorteio(request,response){
         let{_id}=request.params;
