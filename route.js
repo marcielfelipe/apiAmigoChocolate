@@ -18,7 +18,7 @@ route.get('/login/:_id/:senha',LoginController.geraToken);
 
 //usuario
 route.get('/usuario',UsuarioController.index);
-route.get('/usuario/:_id',UsuarioController.getUsuario);
+route.get('/usuario/:_id',auth,UsuarioController.getUsuario);
 route.post('/usuario',UsuarioValidationRules(), validate, UsuarioController.create);
 route.put('/usuario',UsuarioController.edit);
 route.delete('/usuario/:_id',UsuarioController.delete);
