@@ -24,14 +24,14 @@ route.put('/usuario',UsuarioController.edit);
 route.delete('/usuario/:_id',UsuarioController.delete);
 
 //grupo
-route.get('/grupo',auth,GrupoController.index);
+route.get('/grupo',GrupoController.index);
 route.get('/grupo/:_id',GrupoController.getGrupo);
 route.post('/grupo',GrupoValidationRules(),validate, GrupoController.create);
 route.put('/grupo',GrupoController.edit);
 route.delete('/grupo/:_id',GrupoController.delete);
 //participante
 route.put('/grupo/participante',GrupoController.addParticipante);
-route.delete('/grupo/participante',GrupoController.deleteParticipante);
+route.post('/grupo/participante/:_id',GrupoController.deleteParticipante);
 
 //sorteio
 route.get('/grupo/sorteio/:_id',GrupoController.sorteio);   //sortear

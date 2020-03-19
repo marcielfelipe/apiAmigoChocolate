@@ -3,7 +3,7 @@ const Grupo = require('../Models/Grupo');
 module.exports={
     async index(request,response){      
         const {page=1}=request.query; 
-        const GrupoRetorno=await Grupo.paginate({},{page,limit:2});
+        const GrupoRetorno=await Grupo.paginate({},{page,limit:5});
         return response.json(GrupoRetorno);
     },
     async getGrupo(request,response){
@@ -42,6 +42,13 @@ module.exports={
     },
     async deleteParticipante(request,response){
         let{_id}=request.params;
+        let{_idParticipante}=request.body;
+        Grupo.findOneAndUpdate({ _id: _id }, { "$pull": { participantes: { _id: _idParticipante } } }, { new: true }, async (err, res) => {
+            if (err) {
+                return response.send(500).json({ ...generic, _message: err.message });
+            }
+        });
+        return response.json('Participante removido com sucesso!');
     },
     async sorteio(request,response){
         let{_id}=request.params;

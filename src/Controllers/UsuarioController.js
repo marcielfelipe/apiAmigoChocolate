@@ -3,7 +3,7 @@ const Usuario = require('../Models/Usuario');
 module.exports={
     async index(request,response){
         const {page=1}=request.query;
-        const UsuarioRetorno=await Usuario.paginate({},{page,limit:2});
+        const UsuarioRetorno=await Usuario.paginate({},{page,limit:5});
         return response.json(UsuarioRetorno);
     },
     async getUsuario(request,response){
