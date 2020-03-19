@@ -11,6 +11,6 @@ mongoose.connect('mongodb+srv://wellington:wlborges@cluster0-zlxke.mongodb.net/t
     useUnifiedTopology:true
 });
 
-app.listen(3333);
+app.listen(process.env.PORT||3000);
 //mongodb+srv://humberto:humberto@cluster0-fbd4q.azure.mongodb.net/test?retryWrites=true&w=majority+srv://wellington:wlborges@cluster0-zlxke.mongodb.net/test?retryWrites=true&w=majority
 //mongodb+srv://wellington:wlborges@cluster0-zlxke.mongodb.net/test?retryWrites=true&w=majority
