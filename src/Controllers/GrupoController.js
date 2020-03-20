@@ -36,8 +36,13 @@ module.exports={
         return response.json(GrupoRetorno);
     },
     async addParticipante(request,response){
-        let{_id,participantes} = request.body;       
-        const GrupoRetorno = await Grupo.update({_id:_id},{$push:{participantes:participantes}});
+        let{_id,participantes,itens} = request.body;       
+        const GrupoRetorno = await Grupo.update({_id:_id},{$push:{participantes:participantes,itens:itens}});
+        return response.json(GrupoRetorno);
+    },
+    async addLista(request,response){
+        let{_id,idParticipante,desejo} = request.body;       
+        const GrupoRetorno = await Grupo.update({_id:_id,_id:idParticipante},{$push:{participantes:{itens:{item:desejo}}}});
         return response.json(GrupoRetorno);
     },
     async deleteParticipante(request,response){

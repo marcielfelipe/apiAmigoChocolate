@@ -32,7 +32,7 @@ route.delete('/grupo/:_id',GrupoController.delete);
 //participante
 route.put('/grupo/participante',GrupoController.addParticipante);
 route.post('/grupo/participante/:_id',GrupoController.deleteParticipante);
-
+route.put('/grupo/listadesejos',GrupoController.addLista);
 //sorteio
 route.get('/grupo/sorteio/:_id',GrupoController.sorteio);   //sortear
 route.put('/grupo/sorteio/:_id',GrupoController.deleteSorteio); //delete sorteio
@@ -43,7 +43,7 @@ route.get('/listadesejos/:_id',ListaDesejosController.getListaDesejos); //get em
 route.post('/listadesejos',ListaDesejosController.create);  //criar lista de desejos
 route.put('/listadesejos',ListaDesejosController.edit)  //editar lista de desejos
 route.delete('/listadesejos/:_id',ListaDesejosController.delete);    //deletar lista de desejos
-
+route.put('/listadesejos/deleteitem/:_id',ListaDesejosController.deleteItem);  //deleta item da lista de desejos
 route.put('/listadesejos/additem',ListaDesejosController.addItem);  //adicionar item a lista de desejos
 
 

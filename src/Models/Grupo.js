@@ -9,6 +9,11 @@ const GrupoSchema=new mongoose.Schema({
     participantes:[{
         _id : {type: mongoose.Schema.Types.ObjectId, ref: 'Usuario'},
         idListaDesejos:{type: mongoose.Schema.Types.ObjectId, ref: 'ListaDesejos'}
+        /* itens:[
+            {
+                item:String
+            }
+        ] */
     }],
     sorteio:[{
         _id : {type: mongoose.Schema.Types.ObjectId, ref: 'Usuario'},
