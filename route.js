@@ -17,11 +17,11 @@ const route=Router();
 route.get('/login',LoginController.geraToken);
 
 //usuario
-route.get('/usuario',auth,UsuarioController.index);
+route.get('/usuario',auth, UsuarioController.index);
 route.get('/usuario/:_id',auth,UsuarioController.getUsuario);
 route.post('/usuario',UsuarioValidationRules(), validate, UsuarioController.create);
-route.put('/usuario',auth,UsuarioController.edit);
-route.delete('/usuario/:_id',auth,UsuarioController.delete);
+route.put('/usuario',UsuarioValidationRules(), auth,UsuarioController.edit);
+route.delete('/usuario/:_id',UsuarioController.delete);
 
 //grupo
 route.get('/grupo',auth,GrupoController.index);
