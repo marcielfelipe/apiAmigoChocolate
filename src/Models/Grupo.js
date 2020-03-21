@@ -6,6 +6,7 @@ const GrupoSchema=new mongoose.Schema({
     dataSorteio:Date,
     valorMinimo:Number,
     valorMaximo:Number,
+    status:String,
     participantes:[{
         _id : {type: mongoose.Schema.Types.ObjectId, ref: 'Usuario'},
         idListaDesejos:{type: mongoose.Schema.Types.ObjectId, ref: 'ListaDesejos'}

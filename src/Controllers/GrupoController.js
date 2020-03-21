@@ -14,11 +14,13 @@ module.exports={
     async create(request,response){
         let{nome,dataSorteio,valorMinimo,valorMaximo}=request.body;
         //inserir no banco mongodb
+        const status="Em aberto";
         const GrupoRetorno=await Grupo.create({
             nome,
             dataSorteio,
             valorMinimo,
-            valorMaximo       
+            valorMaximo,
+            status
         });
         
         return response.json(GrupoRetorno);
@@ -94,12 +96,18 @@ module.exports={
                 await Grupo.update({_id:_id},{$push:{sorteio:{_id:embaralhado[i], _idAmigo:embaralhado[0]}}});
             }
         } 
+        //const status="Sorteado";
+        await Grupo.update({_id:_id},{$set:{status:"Sorteado"}});
+
         return response.json(embaralhado);
     },
     async deleteSorteio(request,response){
         let{_id}=request.params;
-        let{sorteio}=request.body;
-        const GrupoRetorno=await Grupo.update({_id:_id},{$set:{sorteio:sorteio}}); 
+        const sorteio=[];
+        const status = "Em aberto";
+        const GrupoRetorno=await Grupo.update({_id:_id},{$set:{sorteio:sorteio, status:status}}); 
+        //const status="Em aberto";
+        //GrupoRetorno.update({_id:_id},{$set:{status:status}});
         return response.json(GrupoRetorno);
     }
 }
