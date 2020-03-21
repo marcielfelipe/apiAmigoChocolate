@@ -13,7 +13,7 @@ module.exports={
         return response.json(ListaDesejosRetorno);
     },
     async create(request,response){
-        let{idGrupo,idParticipante,itens}=request.body;
+        let{itens}=request.body;
         const ListaDesejosRetorno=await ListaDesejos.create({
             idGrupo,
             idParticipante,
@@ -22,9 +22,9 @@ module.exports={
         return response.json(ListaDesejosRetorno);
     },   
     async edit(request,response){
-        let{_id,idGrupo,idParticipante,itens}=request.body;
+        let{_id,itens}=request.body;
         //atualizar no banco mongodb
-        const ListaDesejosRetorno=await ListaDesejos.updateOne({_id:_id},{$set:{idGrupo:idGrupo,idParticipante:idParticipante,itens:itens}});
+        const ListaDesejosRetorno=await ListaDesejos.updateOne({_id:_id},{$set:{itens:itens}});
         return response.json(ListaDesejosRetorno);
     }, 
     async delete(request,response){
@@ -39,14 +39,13 @@ module.exports={
         return response.json(ListaDesejosRetorno);
     },
     async deleteItem(request, response){
-        let{_id}=request.params;
-        let{desejo}=request.body;
+        let{_id, desejo}=request.body;
         ListaDesejos.findOneAndUpdate({ _id: _id }, { "$pull": { itens: { item: desejo } } }, { new: true }, async (err, res) => {
             if (err) {
                 return response.send(500).json({ ...generic, _message: err.message });
             }
         });
-        return response.json('Participante removido com sucesso!');
+        return response.json('Item removido com sucesso!');
     },
     
 }
