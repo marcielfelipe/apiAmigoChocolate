@@ -14,38 +14,38 @@ const {GrupoValidationRules} = require('./src/validations/GrupoValidation');
 
 const route=Router();
 //login
-route.get('/login/:_id/:senha',LoginController.geraToken);
+route.get('/login',LoginController.geraToken);
 
 //usuario
-route.get('/usuario',UsuarioController.index);
+route.get('/usuario',auth,UsuarioController.index);
 route.get('/usuario/:_id',auth,UsuarioController.getUsuario);
 route.post('/usuario',UsuarioValidationRules(), validate, UsuarioController.create);
-route.put('/usuario',UsuarioController.edit);
-route.delete('/usuario/:_id',UsuarioController.delete);
+route.put('/usuario',auth,UsuarioController.edit);
+route.delete('/usuario/:_id',auth,UsuarioController.delete);
 
 //grupo
-route.get('/grupo',GrupoController.index);
-route.get('/grupo/:_id',GrupoController.getGrupo);
-route.post('/grupo',GrupoValidationRules(),validate, GrupoController.create);
-route.put('/grupo',GrupoController.edit);
-route.delete('/grupo/:_id',GrupoController.delete);
+route.get('/grupo',auth,GrupoController.index);
+route.get('/grupo/:_id',auth,GrupoController.getGrupo);
+route.post('/grupo',auth,GrupoValidationRules(),validate, GrupoController.create);
+route.put('/grupo',auth,GrupoController.edit);
+route.delete('/grupo/:_id',auth,GrupoController.delete);
 //participante
-route.put('/grupo/participante',GrupoController.addParticipante);
-route.post('/grupo/participante/:_id',GrupoController.deleteParticipante);
-route.put('/grupo/listadesejos',GrupoController.addLista);
+route.put('/grupo/participante',auth,GrupoController.addParticipante);
+route.post('/grupo/participante/:_id',auth,GrupoController.deleteParticipante);
+route.put('/grupo/listadesejos',auth,GrupoController.addLista);
 //sorteio
-route.get('/grupo/sorteio/:_id',GrupoController.sorteio);   //sortear
-route.post('/grupo/sorteio/:_id',GrupoController.deleteSorteio); //delete sorteio
-route.post('/grupo/addlista/:_id',GrupoController.addLista);   //adiciona lista de desejos ao participante
-route.post('/grupo/deletelista',GrupoController.deleteLista);   //deleta lista de desejos do
+route.get('/grupo/sorteio/:_id',auth,GrupoController.sorteio);   //sortear
+route.post('/grupo/sorteio/:_id',auth,GrupoController.deleteSorteio); //delete sorteio
+route.post('/grupo/addlista/:_id',auth,GrupoController.addLista);   //adiciona lista de desejos ao participante
+route.post('/grupo/deletelista',auth,GrupoController.deleteLista);   //deleta lista de desejos do
 //lista de desejos
-route.get('/listadesejos',ListaDesejosController.index);    //listar todas listas de desejos
-route.get('/listadesejos/:_id',ListaDesejosController.getListaDesejos); //get em uma lista de desejos
-route.post('/listadesejos',ListaDesejosController.create);  //criar lista de desejos
-route.put('/listadesejos',ListaDesejosController.edit)  //editar lista de desejos
-route.delete('/listadesejos/:_id',ListaDesejosController.delete);    //deletar lista de desejos
-route.put('/listadesejos/deleteitem/:_id',ListaDesejosController.deleteItem);  //deleta item da lista de desejos
-route.put('/listadesejos/additem',ListaDesejosController.addItem);  //adicionar item a lista de desejos
+route.get('/listadesejos',auth,ListaDesejosController.index);    //listar todas listas de desejos
+route.get('/listadesejos/:_id',auth,ListaDesejosController.getListaDesejos); //get em uma lista de desejos
+route.post('/listadesejos',auth,ListaDesejosController.create);  //criar lista de desejos
+route.put('/listadesejos',auth,ListaDesejosController.edit)  //editar lista de desejos
+route.delete('/listadesejos/:_id',auth,ListaDesejosController.delete);    //deletar lista de desejos
+route.put('/listadesejos/deleteitem/:_id',auth,ListaDesejosController.deleteItem);  //deleta item da lista de desejos
+route.put('/listadesejos/additem',auth,ListaDesejosController.addItem);  //adicionar item a lista de desejos
 
 
 module.exports=route;

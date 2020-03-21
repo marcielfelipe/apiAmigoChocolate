@@ -4,9 +4,14 @@ const jwt = require('jsonwebtoken')
 module.exports={
     async geraToken(request,response){
 
-        let{_id,senha}=request.params;
-        const UsuarioRetorno = await Usuario.findOne({_id:_id});
-        const token = jwt.sign({_id:UsuarioRetorno._id},process.env.JWT_KEY,{expiresIn:300});
-        return response.send({auth:true,token:token});
+        let{email,senha}=request.body;
+        const UsuarioRetorno = await Usuario.findOne({email:email,senha:senha});
+        if(!UsuarioRetorno){
+            return response.send("Usuario ou senha incorreta").json({ ...generic, _message: err.message });
+        }
+        else{
+            const token = jwt.sign({email:UsuarioRetorno.email, senha:UsuarioRetorno.senha},process.env.JWT_KEY,{expiresIn:300});
+            return response.send({auth:true,token:token});
+        }
     }
 }
