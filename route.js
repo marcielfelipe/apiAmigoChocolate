@@ -36,7 +36,8 @@ route.put('/grupo/listadesejos',GrupoController.addLista);
 //sorteio
 route.get('/grupo/sorteio/:_id',GrupoController.sorteio);   //sortear
 route.put('/grupo/sorteio/:_id',GrupoController.deleteSorteio); //delete sorteio
-
+route.post('/grupo/addlista/:_id',GrupoController.addLista);   //adiciona lista de desejos ao participante
+route.post('/grupo/deletelista',GrupoController.deleteLista);   //deleta lista de desejos do
 //lista de desejos
 route.get('/listadesejos',ListaDesejosController.index);    //listar todas listas de desejos
 route.get('/listadesejos/:_id',ListaDesejosController.getListaDesejos); //get em uma lista de desejos

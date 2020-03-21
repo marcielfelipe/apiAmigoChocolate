@@ -36,19 +36,45 @@ module.exports={
         return response.json(GrupoRetorno);
     },
     async addParticipante(request,response){
-        let{_id,participantes,itens} = request.body;       
-        const GrupoRetorno = await Grupo.update({_id:_id},{$push:{participantes:participantes,itens:itens}});
+        let{_id,participantes,idLista} = request.body;       
+        const GrupoRetorno = await Grupo.update({_id:_id},{$push:{participantes:participantes,idListaDesejos:idLista}});
         return response.json(GrupoRetorno);
     },
     async addLista(request,response){
-        let{_id,idParticipante,desejo} = request.body;       
-        const GrupoRetorno = await Grupo.update({_id:_id,_id:idParticipante},{$push:{participantes:{itens:{item:desejo}}}});
+        let{_id} = request.params; 
+        let{idParticipante,idLista}=request.body; 
+
+        //gambiarra
+        Grupo.findOneAndUpdate({ _id: _id }, { "$pull": { participantes: { _id: idParticipante } } }, { new: true }, async (err, res) => {
+            if (err) {
+                return response.send(500).json({ ...generic, _message: err.message });
+            }
+        });
+
+        Grupo.findOneAndUpdate({ _id: _id }, { "$push": { participantes: { _id: idParticipante,idListaDesejos:idLista } } }, { new: true }, async (err, res) => {
+            if (err) {
+                return response.send(500).json({ ...generic, _message: err.message });
+            }
+        });
+
+        return response.json("Lista add com sucesso!");
+    },
+
+    async deleteLista(request,response){
+        let{_id, idParticipante}=request.body;
+        Grupo.findOneAndUpdate({ _id: _id }, { "$pull": { participantes: { _id: idParticipante } } }, { new: true }, async (err, res) => {
+            if (err) {
+                return response.send(500).json({ ...generic, _message: err.message });
+            }
+        });
+        const GrupoRetorno = await Grupo.update({_id:_id},{$push:{participantes:{_id:idParticipante}}});
+
         return response.json(GrupoRetorno);
     },
     async deleteParticipante(request,response){
         let{_id}=request.params;
-        let{_idParticipante}=request.body;
-        Grupo.findOneAndUpdate({ _id: _id }, { "$pull": { participantes: { _id: _idParticipante } } }, { new: true }, async (err, res) => {
+        let{idParticipante}=request.body;
+        Grupo.findOneAndUpdate({ _id: _id }, { "$pull": { participantes: { _id: idParticipante } } }, { new: true }, async (err, res) => {
             if (err) {
                 return response.send(500).json({ ...generic, _message: err.message });
             }
