@@ -13,13 +13,19 @@ module.exports={
     },
     async create(request,response){
         let { nome,email,senha,dataNascimento }=request.body;
-        const UsuarioRetorno = await Usuario.create({
-            nome,
-            email,
-            senha,
-            dataNascimento
-        });
-        return response.json(UsuarioRetorno);
+        const validaEmail = await Usuario.find({email:email});
+        if(validaEmail){
+            response.json({register:false,msg:'Email cadastrado, faça login!'});
+        }
+        else{
+            const UsuarioRetorno = await Usuario.create({
+                nome,
+                email,
+                senha,
+                dataNascimento
+            });
+            return response.json({register:true,msg:'Usuário cadastrado com sucesso!'});
+        }
     },
     async edit(request,response){
         let {nome,email,senha,dataNascimento}=request.body;

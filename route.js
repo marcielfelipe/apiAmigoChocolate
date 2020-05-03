@@ -14,7 +14,7 @@ const {GrupoValidationRules} = require('./src/validations/GrupoValidation');
 
 const route=Router();
 //login
-route.get('/login',LoginController.geraToken);
+route.post('/login',LoginController.geraToken);
 
 //usuario
 route.get('/usuario',auth, UsuarioController.index);
