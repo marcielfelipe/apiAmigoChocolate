@@ -14,10 +14,8 @@ module.exports={
     async create(request,response){
         let { nome,email,senha,dataNascimento }=request.body;
         const validaEmail = await Usuario.find({email:email});
-        if(validaEmail){
-            response.json({register:false,msg:'Email cadastrado, faça login!'});
-        }
-        else{
+        console.log(validaEmail);
+        if(validaEmail==null){
             const UsuarioRetorno = await Usuario.create({
                 nome,
                 email,
@@ -25,6 +23,10 @@ module.exports={
                 dataNascimento
             });
             return response.json({register:true,msg:'Usuário cadastrado com sucesso!'});
+            
+        }
+        else{
+            response.json({register:false,msg:'Email cadastrado, faça login!'});
         }
     },
     async edit(request,response){
