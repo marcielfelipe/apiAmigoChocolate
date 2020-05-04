@@ -15,7 +15,7 @@ module.exports={
         let { nome,email,senha,dataNascimento }=request.body;
         const validaEmail = await Usuario.find({email:email});
         console.log(validaEmail);
-        if(validaEmail==null){
+        if(validaEmail.length==0){
             const UsuarioRetorno = await Usuario.create({
                 nome,
                 email,
