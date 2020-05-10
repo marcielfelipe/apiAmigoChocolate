@@ -11,6 +11,11 @@ module.exports={
         const GrupoRetorno=await Grupo.find({_id:_id});
         return response.json(GrupoRetorno);
     },
+    async getGrupoParticipante(request, response){
+        let _id = request.user._id;
+        console.log(_id);
+        return response.json("ok");
+    },
     async create(request,response){
         let{nome,dataSorteio,valorMinimo,valorMaximo}=request.body;
         //inserir no banco mongodb
