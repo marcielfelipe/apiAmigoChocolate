@@ -11,13 +11,14 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.4",
     "mongoose-paginate": "^5.0.3",
-    "nodejs": "^0.0.0"
+    "nodejs": "^0.0.0",
+    "yarn": "^1.22.4"
   },
   "scripts": {
     "dev": " env-cmd -f ./src/.env nodemon index.js",
     "start": "node index.js"
   },
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.3"
   }
 }
