@@ -6,16 +6,22 @@ module.exports={
         const GrupoRetorno=await Grupo.paginate({},{page,limit:5});
         return response.json(GrupoRetorno);
     },
+    async getGruposUsuario(request, response){
+        const _id = request.headers.authorization._id;
+
+
+        const gruposUsuario = await Grupo.find({participantes:_id});
+        console.log(gruposUsuario);
+        return response.json(gruposUsuario);
+    },
+
+
     async getGrupo(request,response){
         let{_id}=request.params;
         const GrupoRetorno=await Grupo.find({_id:_id});
         return response.json(GrupoRetorno);
     },
-    async getGrupoParticipante(request, response){
-        let _id = request.user._id;
-        console.log(_id);
-        return response.json("ok");
-    },
+    
     async create(request,response){
         let{nome,dataSorteio,valorMinimo,valorMaximo}=request.body;
         //inserir no banco mongodb
