@@ -9,17 +9,13 @@ const GrupoSchema=new mongoose.Schema({
     valorMaximo:Number,
     status:String,
     criadoPor:{
-        _id : {type: mongoose.Schema.Types.ObjectId, ref: 'Usuario'}
+        _id : String,
+        nome:
     },
     criadoEm:Date,
     participantes:[{
         _id : {type: mongoose.Schema.Types.ObjectId, ref: 'Usuario'},
         idListaDesejos:{type: mongoose.Schema.Types.ObjectId, ref: 'ListaDesejos'}
-        /* itens:[
-            {
-                item:String
-            }
-        ] */
     }],
     sorteio:[{
         _id : {type: mongoose.Schema.Types.ObjectId, ref: 'Usuario'},

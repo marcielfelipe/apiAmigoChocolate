@@ -1,4 +1,5 @@
 const Grupo = require('../Models/Grupo');
+const Usuario=require('../Models/Usuario');
 const Auth =require('../middleware/auth');
 
 module.exports={
@@ -11,8 +12,9 @@ module.exports={
         const idUser=request.user._id;
         
         console.log(idUser);
-        //const gruposUsuario = await Grupo.find({participantes:{$elemMatch:{_id:idUser}}});
-        //console.log(gruposUsuario);
+        const gruposUsuario = await Grupo.find({participantes:{$elemMatch:{_id:idUser}}});
+        
+        
         var retorno=[{
             admin:true,
             _idGrupo:"123",
