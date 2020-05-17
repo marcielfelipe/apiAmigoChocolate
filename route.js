@@ -18,15 +18,15 @@ route.post('/login',LoginController.geraToken);
 
 //usuario
 route.get('/usuario',auth, UsuarioController.index);
-route.get('/usuario/:_id',auth,UsuarioController.getUsuario);
+route.get('/meuperfil',auth,UsuarioController.getUsuario);
 route.post('/usuario',UsuarioValidationRules(), validate, UsuarioController.create);
 route.put('/usuario',UsuarioValidationRules(), auth,UsuarioController.edit);
-route.delete('/usuario/:_id',UsuarioController.delete);
-
+route.delete('/usuario',auth,UsuarioController.delete);
+route.put('/editsenha',auth,UsuarioController.editSenha);
 //grupo
-route.get('/grupo',auth,GrupoController.index);
-route.get('/gruposUsuario',auth,GrupoController.getGruposUsuario);
-route.get('/grupo/:_id',auth,GrupoController.getGrupo);
+route.get('/todosgrupos',auth,GrupoController.index);
+route.get('/gruposusuario',auth,GrupoController.getGruposUsuario);
+route.get('/grupo',auth,GrupoController.getGrupo);
 route.post('/grupo',auth,GrupoValidationRules(),validate, GrupoController.create);
 route.put('/grupo',auth,GrupoController.edit);
 route.delete('/grupo/:_id',auth,GrupoController.delete);

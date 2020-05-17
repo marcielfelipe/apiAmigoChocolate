@@ -1,4 +1,5 @@
 const Grupo = require('../Models/Grupo');
+const Auth =require('../middleware/auth');
 
 module.exports={
     async index(request,response){      
@@ -7,34 +8,87 @@ module.exports={
         return response.json(GrupoRetorno);
     },
     async getGruposUsuario(request, response){
-        const _id = request.headers.authorization._id;
-
-
-        const gruposUsuario = await Grupo.find({participantes:_id});
-        console.log(gruposUsuario);
-        return response.json(gruposUsuario);
+        const idUser=request.user._id;
+        
+        console.log(idUser);
+        //const gruposUsuario = await Grupo.find({participantes:{$elemMatch:{_id:idUser}}});
+        //console.log(gruposUsuario);
+        var retorno=[{
+            admin:true,
+            _idGrupo:"123",
+            nomeGrupo:'Nome do Grupo',
+            dataSorteio:'01-01-2000',
+            dataEvento:'01-01-2000',
+            valorMaximo:10,
+            valorMinimo:20,
+            status:"Em aberto",
+            criadoEm:'01-02-2000',
+            participantes:[{nome:"Fulano",email:"@"},{nome:"siclano",email:"@"}],
+            amigo:"Nome"
+        },
+        {
+            admin:false,
+            _idGrupo:"123",
+            nomeGrupo:'Nome do Grupo',
+            dataSorteio:'01-01-2000',
+            dataEvento:'01-01-2000',
+            valorMaximo:10,
+            valorMinimo:20,
+            status:"Em aberto",
+            criadoEm:'01-02-2000',
+            participantes:[{nome:"Fulano",email:"@"},{nome:"siclano",email:"@"}],
+            amigo:"Nome"
+        }
+    
+    ]
+        return response.json(retorno);
     },
 
-
     async getGrupo(request,response){
-        let{_id}=request.params;
+        let{_id}=request.body;
         const GrupoRetorno=await Grupo.find({_id:_id});
         return response.json(GrupoRetorno);
     },
     
     async create(request,response){
-        let{nome,dataSorteio,valorMinimo,valorMaximo}=request.body;
-        //inserir no banco mongodb
-        const status="Em aberto";
-        const GrupoRetorno=await Grupo.create({
-            nome,
-            dataSorteio,
-            valorMinimo,
-            valorMaximo,
-            status
-        });
+        let{nome,dataSorteio,dataEvento,valorMinimo,valorMaximo}=request.body;
+        const _id=request.user._id;
+        var hoje = new Date();
+        hoje.setUTCHours(0);
+        hoje.setUTCMinutes(0);
+        hoje.setUTCSeconds(0);
+        hoje.setUTCMilliseconds(0);
+        dataSorteio=Date.parse(dataSorteio);
+        dataEvento=Date.parse(dataEvento);
+
+        try {
+            if(dataSorteio>=hoje & dataEvento>=dataSorteio & valorMinimo<valorMaximo){
+                const GrupoRetorno=await Grupo.create({
+                    nome,
+                    dataSorteio,
+                    dataEvento,
+                    valorMinimo,
+                    valorMaximo,
+                    status:'Em Aberto',
+                    criadoPor:{
+                        _id:_id
+                    },
+                    criadoEm: hoje,
+                    participantes:[{
+                        _id:_id
+                    }]
+                });
+                return response.json(GrupoRetorno);
+            }else{
+                var datas = dataSorteio>=hoje && dataEvento>=dataSorteio;
+                var valores = valorMinimo<valorMaximo;
+                return response.json({status: false,datas, valores, msg: "Erro ao cadastrar!"})
+            }
+        }catch (error) {
+            return response.json({status:false,msg: "Falha de comunicação com o servidor!"});
         
-        return response.json(GrupoRetorno);
+        }
+        
     },
     async edit(request,response){
         let{_id,nome,dataSorteio,valorMinimo,valorMaximo}=request.body;

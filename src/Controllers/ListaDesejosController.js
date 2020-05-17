@@ -8,15 +8,13 @@ module.exports={
     },
     async getListaDesejos(request,response){
         let{_id}=request.params;
-        //inserir aluno no banco mongodb
-        const ListaDesejosRetorno=await ListaDesejos.find({_id:_id});
+
+        const ListaDesejosRetorno=await ListaDesejos.findOne({_id:_id});
         return response.json(ListaDesejosRetorno);
     },
     async create(request,response){
         let{itens}=request.body;
         const ListaDesejosRetorno=await ListaDesejos.create({
-            idGrupo,
-            idParticipante,
             itens
         });
         return response.json(ListaDesejosRetorno);

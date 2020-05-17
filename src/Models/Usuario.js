@@ -5,7 +5,8 @@ const UsuarioSchema = new mongoose.Schema({
     nome:String,
     email:String,
     senha:String,
-    dataNascimento:Date
+    dataNascimento:Date,
+    status:Boolean
 });
 UsuarioSchema.plugin(mongoosePaginate);
 
