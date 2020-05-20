@@ -10,7 +10,6 @@ const GrupoSchema=new mongoose.Schema({
     status:String,
     criadoPor:{
         _id : String,
-        nome:
     },
     criadoEm:Date,
     participantes:[{
