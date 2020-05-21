@@ -8,18 +8,18 @@ const GrupoSchema=new mongoose.Schema({
     valorMinimo:Number,
     valorMaximo:Number,
     status:String,
-    criadoPor:{
-        _id : String,
-    },
+    criadoPor:String,
     criadoEm:Date,
     participantes:[{
-        _id : {type: mongoose.Schema.Types.ObjectId, ref: 'Usuario'},
-        idListaDesejos:{type: mongoose.Schema.Types.ObjectId, ref: 'ListaDesejos'}
-    }],
-    sorteio:[{
-        _id : {type: mongoose.Schema.Types.ObjectId, ref: 'Usuario'},
-        _idAmigo : {type: mongoose.Schema.Types.ObjectId, ref: 'Usuario'}
-        
+        _id:String,
+        nome:String,
+        email:String,
+        dataNascimento:Date,
+        status:Boolean,
+        listaDesejos:[{
+            item:String
+        }],
+        amigo:String
     }]
 });
 GrupoSchema.plugin(mongoosePaginate);

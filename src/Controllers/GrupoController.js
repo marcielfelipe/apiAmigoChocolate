@@ -8,13 +8,77 @@ module.exports={
         const GrupoRetorno=await Grupo.paginate({},{page,limit:5});
         return response.json(GrupoRetorno);
     },
+
+    async getGrupo(request,response){
+        let{_id}=request.body;
+        const GrupoRetorno=await Grupo.find({_id:_id});
+        return response.json(GrupoRetorno);
+    },
+    
+    async create(request,response){
+        let{nome,dataSorteio,dataEvento,valorMinimo,valorMaximo}=request.body;
+        const _id=request.user._id;
+        const nomeUser=request.user.nome;
+        const email=request.user.email;
+        const dataNascimento=request.user.dataNascimento;
+        const statusUser=request.user.status;
+
+
+        var hoje = new Date();
+        hoje.setUTCHours(0);
+        hoje.setUTCMinutes(0);
+        hoje.setUTCSeconds(0);
+        hoje.setUTCMilliseconds(0);
+        dataSorteio=Date.parse(dataSorteio);
+        dataEvento=Date.parse(dataEvento);
+
+        try {
+            if(dataSorteio>=hoje & dataEvento>=dataSorteio & valorMinimo<valorMaximo){
+                const GrupoRetorno=await Grupo.create({
+                    nome,
+                    dataSorteio,
+                    dataEvento,
+                    valorMinimo,
+                    valorMaximo,
+                    status:'Em Aberto',
+                    criadoPor:nomeUser,
+                    criadoEm: hoje,
+                    participantes:[{
+                        _id,
+                        nome:nomeUser,
+                        email,
+                        dataNascimento,
+                        status:statusUser
+                    }]
+                });
+                return response.json(GrupoRetorno);
+            }else{
+                var datas = dataSorteio>=hoje && dataEvento>=dataSorteio;
+                var valores = valorMinimo<valorMaximo;
+                return response.json({status: false,datas, valores, msg: "Erro ao cadastrar!"})
+            }
+        }catch (error) {
+            return response.json({status:false,msg: "Falha de comunicação com o servidor!"});
+        
+        }
+        
+    },
+    async edit(request,response){
+        let{_id,nome,dataSorteio,valorMinimo,valorMaximo}=request.body;
+        //atualizar no banco mongodb
+        const GrupoRetorno=await Grupo.updateOne({_id:_id},{$set:{nome:nome,dataSorteio:dataSorteio,valorMinimo:valorMinimo,valorMaximo:valorMaximo}});
+        return response.json(GrupoRetorno);
+    },
+    async delete(request,response){
+        let{_id}=request.params;
+        //delete no banco mongodb
+        const GrupoRetorno=await Grupo.deleteOne({_id:_id}); 
+        return response.json(GrupoRetorno);
+    },
     async getGruposUsuario(request, response){
         const idUser=request.user._id;
-        
         console.log(idUser);
         const gruposUsuario = await Grupo.find({participantes:{$elemMatch:{_id:idUser}}});
-        
-        
         var retorno=[{
             admin:true,
             _idGrupo:"123",
@@ -45,75 +109,59 @@ module.exports={
     ]
         return response.json(retorno);
     },
-
-    async getGrupo(request,response){
-        let{_id}=request.body;
-        const GrupoRetorno=await Grupo.find({_id:_id});
-        return response.json(GrupoRetorno);
-    },
-    
-    async create(request,response){
-        let{nome,dataSorteio,dataEvento,valorMinimo,valorMaximo}=request.body;
-        const _id=request.user._id;
-        var hoje = new Date();
-        hoje.setUTCHours(0);
-        hoje.setUTCMinutes(0);
-        hoje.setUTCSeconds(0);
-        hoje.setUTCMilliseconds(0);
-        dataSorteio=Date.parse(dataSorteio);
-        dataEvento=Date.parse(dataEvento);
-
+    async addParticipante(request,response){
+        let{_id,email} = request.body;    
         try {
-            if(dataSorteio>=hoje & dataEvento>=dataSorteio & valorMinimo<valorMaximo){
-                const GrupoRetorno=await Grupo.create({
-                    nome,
-                    dataSorteio,
-                    dataEvento,
-                    valorMinimo,
-                    valorMaximo,
-                    status:'Em Aberto',
-                    criadoPor:{
-                        _id:_id
-                    },
-                    criadoEm: hoje,
-                    participantes:[{
-                        _id:_id
-                    }]
-                });
-                return response.json(GrupoRetorno);
-            }else{
-                var datas = dataSorteio>=hoje && dataEvento>=dataSorteio;
-                var valores = valorMinimo<valorMaximo;
-                return response.json({status: false,datas, valores, msg: "Erro ao cadastrar!"})
+            const UsuarioRetorno=await Usuario.findOne({email:email});
+            const ValidaParticipante = await Grupo.find({_id:_id,participantes:{$elemMatch:{email:email}}});
+            if (!UsuarioRetorno){
+                //chama funcção de envio de email
+                return response.json({status:false,msg:"Usuário não encontrado!"});
+            }else if(ValidaParticipante.length==0){
+                const GrupoRetorno = await Grupo.update({_id:_id},{$push:{
+                    participantes:{
+                    _id:UsuarioRetorno._id,
+                    nome:UsuarioRetorno.nome,
+                    email:email,
+                    dataNascimento:UsuarioRetorno.dataNascimento,
+                    status:UsuarioRetorno.status
+                }}});
+    
+              
+                return response.json({status:true,msg:"Usuário adicionado com sucesso!"});
+
             }
-        }catch (error) {
-            return response.json({status:false,msg: "Falha de comunicação com o servidor!"});
-        
+            else{
+                return response.json({status:false,msg:"Usuário já está adicionado ao grupo!"});
+            }
+            
+        } catch (error) {
+            return response.json({status:false,msg:"Erro de comunicação com servidor!"});
         }
         
     },
-    async edit(request,response){
-        let{_id,nome,dataSorteio,valorMinimo,valorMaximo}=request.body;
-        //atualizar no banco mongodb
-        const GrupoRetorno=await Grupo.updateOne({_id:_id},{$set:{nome:nome,dataSorteio:dataSorteio,valorMinimo:valorMinimo,valorMaximo:valorMaximo}});
-        return response.json(GrupoRetorno);
-    },
-    async delete(request,response){
-        let{_id}=request.params;
-        //delete no banco mongodb
-        const GrupoRetorno=await Grupo.deleteOne({_id:_id}); 
-        return response.json(GrupoRetorno);
-    },
-    async addParticipante(request,response){
-        let{_id,participantes,idLista} = request.body;       
-        const GrupoRetorno = await Grupo.update({_id:_id},{$push:{participantes:participantes,idListaDesejos:idLista}});
-        return response.json(GrupoRetorno);
+    async deleteParticipante(request,response){
+        console.log(request.body);
+        const {_id,email}=request.body;
+        
+         try {
+            
+            //const ValidaParticipante = await Grupo.findOneAndDelete({_id:_id,participantes:{$elemMatch:{email:email}}});
+            const GrupoRetorno = await Grupo.updateOne({ _id}, { $pull : { participantes: { email } } });
+            
+            //const retornGrupo = await Grupo.updateOne({ _id }, { $pull : { participantes : { _idParticipante }}});
+            return response.json({status:true,msg:'Participante removido com sucesso!'});  
+
+        } catch (error) {
+            return response.json({status:false,msg:"Erro de comunicação com servidor!"});
+        } 
+        
     },
     async addLista(request,response){
-        let{_id} = request.params; 
-        let{idParticipante,idLista}=request.body; 
+        let{_id,email,item}=request.body; 
 
-        //gambiarra
+        const GrupoRetorno = await Grupo.updateOne({_id,participantes:{$elemMatch:{email}}},{participantes:{listaDesejos:{$push:{item}}}});
+        /* //gambiarra
         Grupo.findOneAndUpdate({ _id: _id }, { "$pull": { participantes: { _id: idParticipante } } }, { new: true }, async (err, res) => {
             if (err) {
                 return response.send(500).json({ ...generic, _message: err.message });
@@ -125,7 +173,7 @@ module.exports={
                 return response.send(500).json({ ...generic, _message: err.message });
             }
         });
-
+ */
         return response.json("Lista add com sucesso!");
     },
 
@@ -140,16 +188,7 @@ module.exports={
 
         return response.json(GrupoRetorno);
     },
-    async deleteParticipante(request,response){
-        let{_id}=request.params;
-        let{idParticipante}=request.body;
-        Grupo.findOneAndUpdate({ _id: _id }, { "$pull": { participantes: { _id: idParticipante } } }, { new: true }, async (err, res) => {
-            if (err) {
-                return response.send(500).json({ ...generic, _message: err.message });
-            }
-        });
-        return response.json('Participante removido com sucesso!');
-    },
+    
     async sorteio(request,response){
         let{_id}=request.params;
         const ParticipantesRetorno=await Grupo.find({_id:_id},{participantes:1,_id:0});
