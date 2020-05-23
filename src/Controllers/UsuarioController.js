@@ -23,14 +23,14 @@ module.exports={
                 dataNascimento,
                 status:true
             });
-            return response.json({register:true,msg:'Usuário cadastrado com sucesso!'});
+            return response.json({status:true,msg:'Usuário cadastrado com sucesso!'});
             
         }
         else if(!validaEmail[0].status){
             const ativarRetorno = await Usuario.updateOne({email:email},{$set:{status:true}});
-            response.json({register:false,msg:'Seja bem vindo novamente, faça login!'});
+            response.json({status:false,msg:'Seja bem vindo novamente, faça login!'});
         }else{
-            response.json({register:false,msg:'Email cadastrado, faça login!'});
+            response.json({status:false,msg:'Email cadastrado, faça login!'});
         }
     },
 
@@ -41,12 +41,12 @@ module.exports={
             const UsuarioRetorno=await Usuario.updateOne({email:email},{$set:{nome:nome,dataNascimento:dataNascimento}});
             console.log(UsuarioRetorno);
             if(UsuarioRetorno.n==0){
-                return response.json({edit:false,msg:"Usuário não encontrado"});
+                return response.json({status:false,msg:"Usuário não encontrado"});
             }else{
-                return response.json({edit:true,msg:'Dados atualizados com sucesso!'});
+                return response.json({status:true,msg:'Dados atualizados com sucesso!'});
             }
         }catch{
-            return response.json({edit:false,msg:'Erro de comunicação com o servidor!'});
+            return response.json({staus:false,msg:'Erro de comunicação com o servidor!'});
         }
     },
 
@@ -70,7 +70,12 @@ module.exports={
 
     async delete(request,response){
         const _id=request.user._id;
-        const UsuarioRetorno=await Usuario.updateOne({_id:_id},{$set:{status:false}});
-        return response.json({staus:false,msg:'Usuário desativado com secesso!'});
+        try {
+            const UsuarioRetorno=await Usuario.updateOne({_id:_id},{$set:{status:false}});
+            return response.json({staus:true,msg:'Usuário desativado com secesso!'});
+            
+        } catch (error) {
+            return response.json({status:false,msg:'Erro de comunicação com o servidor!'});
+        }
     },
 }

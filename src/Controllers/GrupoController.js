@@ -51,11 +51,11 @@ module.exports={
                         status:statusUser
                     }]
                 });
-                return response.json(GrupoRetorno);
+                return response.json({status:true,msg:"Grupo cadastrado com sucesso!"});
             }else{
                 var datas = dataSorteio>=hoje && dataEvento>=dataSorteio;
                 var valores = valorMinimo<valorMaximo;
-                return response.json({status: false,datas, valores, msg: "Erro ao cadastrar!"})
+                return response.json({status: false,datas, valores, msg: "Erro ao cadastrar grupo!"})
             }
         }catch (error) {
             return response.json({status:false,msg: "Falha de comunicação com o servidor!"});
@@ -64,16 +64,26 @@ module.exports={
         
     },
     async edit(request,response){
-        let{_id,nome,dataSorteio,valorMinimo,valorMaximo}=request.body;
+        let{_id,nome,dataSorteio,dataEvento,valorMinimo,valorMaximo}=request.body;
         //atualizar no banco mongodb
-        const GrupoRetorno=await Grupo.updateOne({_id:_id},{$set:{nome:nome,dataSorteio:dataSorteio,valorMinimo:valorMinimo,valorMaximo:valorMaximo}});
-        return response.json(GrupoRetorno);
+        try {
+            const GrupoRetorno=await Grupo.updateOne({_id:_id},{$set:{nome,dataSorteio,dataEvento,valorMinimo,valorMaximo}});
+            return response.json({status:true,msg:"Grupo alterado com sucesso!"});
+            
+        } catch (error) {
+            return response.json({status:false,msg:"Falha de comunicação com o servidor!"});
+        }
     },
     async delete(request,response){
         let{_id}=request.params;
         //delete no banco mongodb
-        const GrupoRetorno=await Grupo.deleteOne({_id:_id}); 
-        return response.json(GrupoRetorno);
+        try {
+            const GrupoRetorno=await Grupo.deleteOne({_id:_id}); 
+            return response.json({status:true,msg:"Grupo deletado com sucesso!"});
+            
+        } catch (error) {
+            return response.json({status:false,msg:"Erro ao deletar grupo"});
+        }
     },
     async getGruposUsuario(request, response){
         const idUser=request.user._id;
@@ -126,7 +136,6 @@ module.exports={
                     dataNascimento:UsuarioRetorno.dataNascimento,
                     status:UsuarioRetorno.status
                 }}});
-    
               
                 return response.json({status:true,msg:"Usuário adicionado com sucesso!"});
 
@@ -160,7 +169,9 @@ module.exports={
     async addLista(request,response){
         let{_id,email,item}=request.body; 
 
-        const GrupoRetorno = await Grupo.updateOne({_id,participantes:{$elemMatch:{email}}},{participantes:{listaDesejos:{$push:{item}}}});
+        const GrupoRetorno = await Grupo.updateOne({_id,participantes:{$elemMatch:{email}}},{$push:{participantes:{listaDesejos:[{item}]}}});
+        //const GrupoRetorno = await Grupo.updateOne({_id,participantes:{email}},{participantes:{listaDesejos:{$push:{item}}}});
+        console.log(GrupoRetorno);
         /* //gambiarra
         Grupo.findOneAndUpdate({ _id: _id }, { "$pull": { participantes: { _id: idParticipante } } }, { new: true }, async (err, res) => {
             if (err) {
@@ -173,7 +184,7 @@ module.exports={
                 return response.send(500).json({ ...generic, _message: err.message });
             }
         });
- */
+        */
         return response.json("Lista add com sucesso!");
     },
 
@@ -192,8 +203,10 @@ module.exports={
     async sorteio(request,response){
         let{_id}=request.params;
         const ParticipantesRetorno=await Grupo.find({_id:_id},{participantes:1,_id:0});
+        //return response.json(ParticipantesRetorno);
         const lista=ParticipantesRetorno.map(item=>{return item.participantes}); 
         var embaralhado = shuffle(lista[0]);
+
         for(i=0;i<embaralhado.length;i++){
             if(i<(embaralhado.length-1)){
                 await Grupo.update({_id:_id},{$push:{sorteio:{_id:embaralhado[i], _idAmigo:embaralhado[i+1]}}});
@@ -202,6 +215,15 @@ module.exports={
                 await Grupo.update({_id:_id},{$push:{sorteio:{_id:embaralhado[i], _idAmigo:embaralhado[0]}}});
             }
         } 
+
+        /* for(i=0;i<embaralhado.length;i++){
+            if(i<(embaralhado.length-1)){
+                await Grupo.update({_id:_id},{$push:{sorteio:{_id:embaralhado[i], _idAmigo:embaralhado[i+1]}}});
+            }
+            else{
+                await Grupo.update({_id:_id},{$push:{sorteio:{_id:embaralhado[i], _idAmigo:embaralhado[0]}}});
+            }
+        }  */
         //const status="Sorteado";
         await Grupo.update({_id:_id},{$set:{status:"Sorteado"}});
 
