@@ -43,7 +43,7 @@ route.post('/grupo/sorteio/:_id',auth,GrupoController.deleteSorteio); //delete s
 
 //lista nos grupos
 route.put('/grupo/addlista',auth,GrupoController.addLista);   //adiciona lista de desejos ao participante
-route.post('/grupo/deletelista',auth,GrupoController.deleteLista);   //deleta lista de desejos do participante
+route.put('/grupo/deletelista',auth,GrupoController.deleteLista);   //deleta lista de desejos do participante
 
 
 module.exports=route;

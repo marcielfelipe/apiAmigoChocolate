@@ -48,8 +48,10 @@ module.exports={
                         nome:nomeUser,
                         email,
                         dataNascimento,
-                        status:statusUser
+                        status:statusUser,
+                        amigo:''
                     }]
+                    
                 });
                 return response.json({status:true,msg:"Grupo cadastrado com sucesso!"});
             }else{
@@ -137,7 +139,8 @@ module.exports={
                     nome:UsuarioRetorno.nome,
                     email:email,
                     dataNascimento:UsuarioRetorno.dataNascimento,
-                    status:UsuarioRetorno.status
+                    status:UsuarioRetorno.status,
+                    amigo:""
                 }}});
               
                 return response.json({status:true,msg:"Usuário adicionado com sucesso!"});
@@ -169,85 +172,84 @@ module.exports={
         } 
         
     },
-
-    //falta
-
     async addLista(request,response){
-        let{_id,email,item}=request.body; 
-
-        const GrupoRetorno = await Grupo.updateOne({_id,participantes:{$elemMatch:{email}}},{participantes:{listaDesejos:{$push:item}}});
-        //const GrupoRetorno = await Grupo.updateOne({_id,participantes:{email}},{participantes:{listaDesejos:{$push:{item}}}});
-        console.log(GrupoRetorno);
-        /* //gambiarra
-        Grupo.findOneAndUpdate({ _id: _id }, { "$pull": { participantes: { _id: idParticipante } } }, { new: true }, async (err, res) => {
-            if (err) {
-                return response.send(500).json({ ...generic, _message: err.message });
+        let{_id,desejo}=request.body; 
+        const email = request.user.email;
+        const GrupoRetorno = await Grupo.findOne({_id,participantes:{$elemMatch:{email}}});
+        var participantes=GrupoRetorno.participantes;
+        for (let index = 0; index < participantes.length; index++) {
+            if(email==participantes[index].email){
+                participantes[index].listaDesejos.push(desejo);    
             }
-        });
-
-        Grupo.findOneAndUpdate({ _id: _id }, { "$push": { participantes: { _id: idParticipante,idListaDesejos:idLista } } }, { new: true }, async (err, res) => {
-            if (err) {
-                return response.send(500).json({ ...generic, _message: err.message });
-            }
-        });
-        */
-        return response.json("Lista add com sucesso!");
+        }
+        const addItem=await Grupo.update({_id},{$set:{participantes}});
+        return response.json({status:true,msg:'Item adicionado com sucesso!'});
     },
-
     async deleteLista(request,response){
-        let{_id, idParticipante}=request.body;
-        Grupo.findOneAndUpdate({ _id: _id }, { "$pull": { participantes: { _id: idParticipante } } }, { new: true }, async (err, res) => {
-            if (err) {
-                return response.send(500).json({ ...generic, _message: err.message });
+        let{_id,desejo}=request.body; 
+        const email = request.user.email;
+        const GrupoRetorno = await Grupo.findOne({_id,participantes:{$elemMatch:{email}}});
+        var participantes=GrupoRetorno.participantes;
+        for (let index = 0; index < participantes.length; index++) {
+            if(email==participantes[index].email){
+                participantes[index].listaDesejos.pull(desejo);    
             }
-        });
-        const GrupoRetorno = await Grupo.update({_id:_id},{$push:{participantes:{_id:idParticipante}}});
-
-        return response.json(GrupoRetorno);
+        }
+        const addItem=await Grupo.update({_id},{$set:{participantes}});
+        return response.json({status:true,msg:'Item deletado com sucesso!'});
     },
-    
     async sorteio(request,response){
         let{_id}=request.params;
-        const ParticipantesRetorno=await Grupo.find({_id:_id},{participantes:1,_id:0});
-        //return response.json(ParticipantesRetorno);
-        const lista=ParticipantesRetorno.map(item=>{return item.participantes}); 
-        var embaralhado = shuffle(lista[0]);
-
-        for(i=0;i<embaralhado.length;i++){
-            if(i<(embaralhado.length-1)){
-                await Grupo.update({_id:_id},{$push:{sorteio:{_id:embaralhado[i], _idAmigo:embaralhado[i+1]}}});
+        const status = "Sorteado";
+        try {
+            const GrupoRetorno=await Grupo.findOne({_id});
+            const participantes=GrupoRetorno.participantes;
+            //const lista=participantes.map(item=>{return item.id}); 
+            var embaralhado = shuffle(participantes);
+            //var embaralhado = embaralhar(lista);
+            for (let i = 0; i < embaralhado.length; i++) {
+                if(i<(embaralhado.length-1)){
+                    //console.log(embaralhado[i].amigo);
+                    embaralhado[i].amigo = embaralhado[i+1].nome;
+                }else{
+                    embaralhado[i].amigo = embaralhado[0].nome;
+                }
             }
-            else{
-                await Grupo.update({_id:_id},{$push:{sorteio:{_id:embaralhado[i], _idAmigo:embaralhado[0]}}});
-            }
-        } 
-
-        /* for(i=0;i<embaralhado.length;i++){
-            if(i<(embaralhado.length-1)){
-                await Grupo.update({_id:_id},{$push:{sorteio:{_id:embaralhado[i], _idAmigo:embaralhado[i+1]}}});
-            }
-            else{
-                await Grupo.update({_id:_id},{$push:{sorteio:{_id:embaralhado[i], _idAmigo:embaralhado[0]}}});
-            }
-        }  */
-        //const status="Sorteado";
-        await Grupo.update({_id:_id},{$set:{status:"Sorteado"}});
-
-        return response.json(embaralhado);
+            const addItem=await Grupo.update({_id},{$set:{participantes:embaralhado,status}});
+            return response.json({status:true,msg:'Sorteio realizado com sucesso!'});
+        } catch (error) {
+            return response.json("erro");
+        }
     },
     async deleteSorteio(request,response){
         let{_id}=request.params;
-        const sorteio=[];
-        const status = "Em aberto";
-        const GrupoRetorno=await Grupo.update({_id:_id},{$set:{sorteio:sorteio, status:status}}); 
-        //const status="Em aberto";
-        //GrupoRetorno.update({_id:_id},{$set:{status:status}});
-        return response.json(GrupoRetorno);
+        const status = "Em Aberto";
+        try {
+            const GrupoRetorno=await Grupo.findOne({_id});
+            const participantes=GrupoRetorno.participantes;
+            for (let i = 0; i < participantes.length; i++) {
+                participantes[i].amigo = '';
+            }
+            const addItem=await Grupo.update({_id},{$set:{participantes,status}});
+            return response.json({status:true,msg:'Sorteio deletado com sucesso!'});
+        } catch (error) {
+            return response.json("erro");
+        }
     }
 }
 
 function shuffle(o) {
     for (var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
     return o;
-  }
+}
+
+function embaralhar(lista){
+    for(let i = lista.length; i ; i--){
+        const indiceAleatorio = Math.floor(Math.random() * i);
+        const elemento = lista[i-1];
+        lista[i-1] = lista[indiceAleatorio];
+        lista[indiceAleatorio] = elemento
+    }
+    return lista;
+}
 
