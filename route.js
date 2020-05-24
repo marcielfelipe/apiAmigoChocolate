@@ -3,6 +3,7 @@ const{Router}= require('express');
 const UsuarioController=require('./src/Controllers/UsuarioController');
 const GrupoController=require('./src/Controllers/GrupoController');
 const LoginController=require('./src/Controllers/LoginController');
+const ConviteController=require('./src/Controllers/ConviteController');
 const auth = require('./src/middleware/auth');
 
 
@@ -12,6 +13,9 @@ const {UsuarioValidationRules} = require('./src/validations/UsuarioValidation');
 const {GrupoValidationRules} = require('./src/validations/GrupoValidation');
 
 const route=Router();
+//convites
+route.get('/convite',ConviteController.index);
+
 //login
 route.post('/login',LoginController.geraToken);
 

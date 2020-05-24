@@ -1,6 +1,8 @@
 const Grupo = require('../Models/Grupo');
 const Usuario=require('../Models/Usuario');
+const Convite=require('../Models/Convite');
 const Auth =require('../middleware/auth');
+const axios = require('axios');
 
 module.exports={
     async index(request,response){      
@@ -8,13 +10,11 @@ module.exports={
         const GrupoRetorno=await Grupo.paginate({},{page,limit:5});
         return response.json(GrupoRetorno);
     },
-
     async getGrupo(request,response){
         let{_id}=request.body;
         const GrupoRetorno=await Grupo.find({_id:_id});
         return response.json(GrupoRetorno);
     },
-    
     async create(request,response){
         let{nome,dataSorteio,dataEvento,valorMinimo,valorMaximo}=request.body;
         const _id=request.user._id;
@@ -86,48 +86,51 @@ module.exports={
         }
     },
     async getGruposUsuario(request, response){
-        const idUser=request.user._id;
-        console.log(idUser);
-        const gruposUsuario = await Grupo.find({participantes:{$elemMatch:{_id:idUser}}});
-        var retorno=[{
-            admin:true,
-            _idGrupo:"123",
-            nomeGrupo:'Nome do Grupo',
-            dataSorteio:'01-01-2000',
-            dataEvento:'01-01-2000',
-            valorMaximo:10,
-            valorMinimo:20,
-            status:"Em aberto",
-            criadoEm:'01-02-2000',
-            participantes:[{nome:"Fulano",email:"@"},{nome:"siclano",email:"@"}],
-            amigo:"Nome"
-        },
-        {
-            admin:false,
-            _idGrupo:"123",
-            nomeGrupo:'Nome do Grupo',
-            dataSorteio:'01-01-2000',
-            dataEvento:'01-01-2000',
-            valorMaximo:10,
-            valorMinimo:20,
-            status:"Em aberto",
-            criadoEm:'01-02-2000',
-            participantes:[{nome:"Fulano",email:"@"},{nome:"siclano",email:"@"}],
-            amigo:"Nome"
+        const email=request.user.email;
+        const GrupoRetorno = await Grupo.find({participantes:{$elemMatch:{email}}});
+        var retorno={};
+        for (let index = 0; index < GrupoRetorno.length; index++) {
+            retorno[index] = {
+                nome:GrupoRetorno[index].nome,
+                dataSorteio:GrupoRetorno[index].dataSorteio,
+                dataEvento:GrupoRetorno[index].dataEvento,
+                valorMinimo:GrupoRetorno[index].valorMinimo,
+                valorMaximo:GrupoRetorno[index].valorMaximo,
+                status:GrupoRetorno[index].status,
+                criadoPor:GrupoRetorno[index].criadoPor,
+                criadoEm:GrupoRetorno[index].criadoEm,
+                participantes:GrupoRetorno[index].participantes
+            }; 
         }
-    
-    ]
         return response.json(retorno);
+
+
     },
     async addParticipante(request,response){
         let{_id,email} = request.body;    
         try {
             const UsuarioRetorno=await Usuario.findOne({email:email});
-            const ValidaParticipante = await Grupo.find({_id:_id,participantes:{$elemMatch:{email:email}}});
             if (!UsuarioRetorno){
-                //chama funcção de envio de email
-                return response.json({status:false,msg:"Usuário não encontrado!"});
-            }else if(ValidaParticipante.length==0){
+                const grupo = await Grupo.findOne({_id});
+                const convidaUser = await Convite.update({email},
+                    {
+                       $set: { email,idGrupo:_id },
+                       $setOnInsert: { defaultQty: 100 }
+                    },
+                    { upsert: true });
+                console.log(convidaUser);
+
+                await axios.post('https://emailautomatico.herokuapp.com/send',
+                    {   
+                        to:email, 
+                        subject: 'Convite Amigo Chocolate',
+                        html:`<h1>Amigo Chocolate</h1><p>${request.user.nome} (${request.user.email}) te convidou para participar do ${grupo.nome}. Para aceitar, <a href='appamigochocolate.netlify.app'>clique aqui </a> para fazer seu cadastro</p>`
+                    }
+                )
+                return response.json({status:false,msg:"Convite enviado com sucesso!"});
+            }
+            const ValidaParticipante = await Grupo.find({_id:_id,participantes:{$elemMatch:{email:email}}});
+            if(ValidaParticipante.length==0){
                 const GrupoRetorno = await Grupo.update({_id:_id},{$push:{
                     participantes:{
                     _id:UsuarioRetorno._id,
@@ -166,10 +169,13 @@ module.exports={
         } 
         
     },
+
+    //falta
+
     async addLista(request,response){
         let{_id,email,item}=request.body; 
 
-        const GrupoRetorno = await Grupo.updateOne({_id,participantes:{$elemMatch:{email}}},{$push:{participantes:{listaDesejos:[{item}]}}});
+        const GrupoRetorno = await Grupo.updateOne({_id,participantes:{$elemMatch:{email}}},{participantes:{listaDesejos:{$push:item}}});
         //const GrupoRetorno = await Grupo.updateOne({_id,participantes:{email}},{participantes:{listaDesejos:{$push:{item}}}});
         console.log(GrupoRetorno);
         /* //gambiarra
