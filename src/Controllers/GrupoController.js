@@ -109,6 +109,17 @@ module.exports={
 
 
     },
+    async getParticipantes(request,response){
+        let {_id}=request.body;
+        try {
+            const GrupoRetorno = await Grupo.findOne({_id});
+            var participantes=GrupoRetorno.participantes;
+            return response.json(participantes);
+            
+        } catch (error) {
+            return response.json("Erro de conexão com o servidor!");
+        }
+    },
     async addParticipante(request,response){
         let{_id,email} = request.body;    
         try {
