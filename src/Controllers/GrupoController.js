@@ -110,7 +110,7 @@ module.exports={
 
     },
     async getParticipantes(request,response){
-        let {_id}=request.body;
+        let {_id}=request.params;
         try {
             const GrupoRetorno = await Grupo.findOne({_id});
             var participantes=GrupoRetorno.participantes;
