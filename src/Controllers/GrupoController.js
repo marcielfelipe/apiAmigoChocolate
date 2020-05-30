@@ -90,7 +90,7 @@ module.exports={
     async getGruposUsuario(request, response){
         const email=request.user.email;
         const GrupoRetorno = await Grupo.find({participantes:{$elemMatch:{email}}});
-        var retorno={};
+        var retorno=[];
         for (let index = 0; index < GrupoRetorno.length; index++) {
             retorno[index] = {
                 _id:GrupoRetorno[index]._id,
