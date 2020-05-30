@@ -93,6 +93,7 @@ module.exports={
         var retorno={};
         for (let index = 0; index < GrupoRetorno.length; index++) {
             retorno[index] = {
+                _id:GrupoRetorno[index]._id,
                 nome:GrupoRetorno[index].nome,
                 dataSorteio:GrupoRetorno[index].dataSorteio,
                 dataEvento:GrupoRetorno[index].dataEvento,
