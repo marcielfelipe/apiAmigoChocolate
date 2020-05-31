@@ -12,7 +12,7 @@ module.exports={
     },
     async getGrupo(request,response){
         let{_id}=request.params;
-        const GrupoRetorno=await Grupo.find({_id:_id});
+        const GrupoRetorno=await Grupo.findOne({_id:_id});
         return response.json(GrupoRetorno);
     },
     async create(request,response){
