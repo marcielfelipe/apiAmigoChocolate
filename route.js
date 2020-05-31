@@ -4,6 +4,7 @@ const UsuarioController=require('./src/Controllers/UsuarioController');
 const GrupoController=require('./src/Controllers/GrupoController');
 const LoginController=require('./src/Controllers/LoginController');
 const ConviteController=require('./src/Controllers/ConviteController');
+const ListaDesejosController=require('./src/Controllers/ListaDesejosController');
 const auth = require('./src/middleware/auth');
 
 
@@ -44,6 +45,7 @@ route.post('/grupo/sorteio/:_id',auth,GrupoController.deleteSorteio); //delete s
 
 //lista nos grupos
 route.put('/grupo/addlista',auth,GrupoController.addLista);   //adiciona lista de desejos ao participante
+route.get('/lista/:_id',auth,ListaDesejosController.getLista);  
 route.put('/grupo/deletelista',auth,GrupoController.deleteLista);   //deleta lista de desejos do participante
 
 
