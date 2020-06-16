@@ -23,12 +23,14 @@ module.exports={
         const dataNascimento=request.user.dataNascimento;
         const statusUser=request.user.status;
 
-
         var hoje = new Date();
-        hoje.setUTCHours(0);
-        hoje.setUTCMinutes(0);
-        hoje.setUTCSeconds(0);
-        hoje.setUTCMilliseconds(0);
+        var dia = hoje.getDate();
+        var mes = hoje.getMonth()+1 ;
+        var ano = hoje.getFullYear();
+        hoje.setUTCHours();
+        hoje.setUTCMinutes();
+        hoje.setUTCSeconds();
+        hoje.setUTCMilliseconds();
         dataSorteio=Date.parse(dataSorteio);
         dataEvento=Date.parse(dataEvento);
 
@@ -53,7 +55,8 @@ module.exports={
                     }]
                     
                 });
-                return response.json({status:true,msg:"Grupo cadastrado com sucesso!"});
+                return response.json (parseDate);
+                //return response.json({status:true,msg:"Grupo cadastrado com sucesso!"});
             }else{
                 var datas = dataSorteio>=hoje && dataEvento>=dataSorteio;
                 var valores = valorMinimo<valorMaximo;
