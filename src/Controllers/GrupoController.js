@@ -23,11 +23,21 @@ module.exports={
         const dataNascimento=request.user.dataNascimento;
         const statusUser=request.user.status;
 
+
         var hoje = new Date();
+<<<<<<< HEAD
         hoje.setUTCHours();
         hoje.setUTCMinutes();
         hoje.setUTCSeconds();
         hoje.setUTCMilliseconds();
+=======
+        hoje.setUTCHours(0);
+        hoje.setUTCMinutes(0);
+        hoje.setUTCSeconds(0);
+        hoje.setUTCMilliseconds(0);
+        dataSorteio=Date.parse(dataSorteio);
+        dataEvento=Date.parse(dataEvento);
+>>>>>>> parent of d5ae79c... commit
 
         try {
             if(dataSorteio>=hoje & dataEvento>=dataSorteio & valorMinimo<valorMaximo){
@@ -50,7 +60,11 @@ module.exports={
                     }]
                     
                 });
+<<<<<<< HEAD
                 //return response.json({status:true,msg:"Grupo cadastrado com sucesso!"});
+=======
+                return response.json({status:true,msg:"Grupo cadastrado com sucesso!"});
+>>>>>>> parent of d5ae79c... commit
             }else{
                 var datas = dataSorteio>=hoje && dataEvento>=dataSorteio;
                 var valores = valorMinimo<valorMaximo;
