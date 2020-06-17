@@ -25,23 +25,10 @@ module.exports={
 
 
         var hoje = new Date();
-<<<<<<< HEAD
-<<<<<<< HEAD
         hoje.setUTCHours();
         hoje.setUTCMinutes();
         hoje.setUTCSeconds();
         hoje.setUTCMilliseconds();
-=======
-=======
->>>>>>> parent of d5ae79c... commit
-        hoje.setUTCHours(0);
-        hoje.setUTCMinutes(0);
-        hoje.setUTCSeconds(0);
-        hoje.setUTCMilliseconds(0);
-        dataSorteio=Date.parse(dataSorteio);
-        dataEvento=Date.parse(dataEvento);
->>>>>>> parent of d5ae79c... commit
-
         try {
             if(dataSorteio>=hoje & dataEvento>=dataSorteio & valorMinimo<valorMaximo){
                 const GrupoRetorno=await Grupo.create({
@@ -63,15 +50,6 @@ module.exports={
                     }]
                     
                 });
-<<<<<<< HEAD
-<<<<<<< HEAD
-                //return response.json({status:true,msg:"Grupo cadastrado com sucesso!"});
-=======
-                return response.json({status:true,msg:"Grupo cadastrado com sucesso!"});
->>>>>>> parent of d5ae79c... commit
-=======
-                return response.json({status:true,msg:"Grupo cadastrado com sucesso!"});
->>>>>>> parent of d5ae79c... commit
             }else{
                 var datas = dataSorteio>=hoje && dataEvento>=dataSorteio;
                 var valores = valorMinimo<valorMaximo;
