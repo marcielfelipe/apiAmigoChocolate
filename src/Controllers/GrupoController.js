@@ -26,11 +26,14 @@ module.exports={
 
         var hoje = new Date();
 <<<<<<< HEAD
+<<<<<<< HEAD
         hoje.setUTCHours();
         hoje.setUTCMinutes();
         hoje.setUTCSeconds();
         hoje.setUTCMilliseconds();
 =======
+=======
+>>>>>>> parent of d5ae79c... commit
         hoje.setUTCHours(0);
         hoje.setUTCMinutes(0);
         hoje.setUTCSeconds(0);
@@ -61,7 +64,11 @@ module.exports={
                     
                 });
 <<<<<<< HEAD
+<<<<<<< HEAD
                 //return response.json({status:true,msg:"Grupo cadastrado com sucesso!"});
+=======
+                return response.json({status:true,msg:"Grupo cadastrado com sucesso!"});
+>>>>>>> parent of d5ae79c... commit
 =======
                 return response.json({status:true,msg:"Grupo cadastrado com sucesso!"});
 >>>>>>> parent of d5ae79c... commit
