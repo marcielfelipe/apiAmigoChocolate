@@ -24,15 +24,10 @@ module.exports={
         const statusUser=request.user.status;
 
         var hoje = new Date();
-        var dia = hoje.getDate();
-        var mes = hoje.getMonth()+1 ;
-        var ano = hoje.getFullYear();
         hoje.setUTCHours();
         hoje.setUTCMinutes();
         hoje.setUTCSeconds();
         hoje.setUTCMilliseconds();
-        dataSorteio=Date.parse(dataSorteio);
-        dataEvento=Date.parse(dataEvento);
 
         try {
             if(dataSorteio>=hoje & dataEvento>=dataSorteio & valorMinimo<valorMaximo){
@@ -55,7 +50,6 @@ module.exports={
                     }]
                     
                 });
-                return response.json (parseDate);
                 //return response.json({status:true,msg:"Grupo cadastrado com sucesso!"});
             }else{
                 var datas = dataSorteio>=hoje && dataEvento>=dataSorteio;
