@@ -54,7 +54,7 @@ module.exports={
                     
                 });
                 
-                return response.json({status: true, msg: "Grupo cadastrado com sucesso!"})
+                return response.json({status: true, msg: "Grupo cadastrado com Sucesso!"})
             }else{
                 var datas = dataSorteio>=hoje && dataEvento>=dataSorteio;
                 var valores = valorMinimo<valorMaximo;
