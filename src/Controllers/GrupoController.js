@@ -11,7 +11,7 @@ module.exports={
         return response.json(GrupoRetorno);
     },
     async getGrupo(request,response){
-        let{_id}=request.params;
+        let{_id}=request.body;
         const GrupoRetorno=await Grupo.findOne({_id:_id});
         return response.json(GrupoRetorno);
     },
