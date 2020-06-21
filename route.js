@@ -30,7 +30,7 @@ route.put('/editsenha',auth,UsuarioController.editSenha);
 //grupo
 route.get('/todosgrupos',auth,GrupoController.index);
 route.get('/gruposusuario',auth,GrupoController.getGruposUsuario);
-route.get('/grupo',auth,GrupoController.getGrupo);
+route.get('/grupo/:_id',auth,GrupoController.getGrupo);
 route.post('/grupo',auth,GrupoValidationRules(),validate, GrupoController.create);
 route.put('/grupo',auth,GrupoController.edit);
 route.delete('/grupo/:_id',auth,GrupoController.delete);
