@@ -192,20 +192,20 @@ module.exports={
         var participantes=GrupoRetorno.participantes;
         for (let index = 0; index < participantes.length; index++) {
             if(email==participantes[index].email){
-                participantes[index].listaDesejos.push(desejo);    
+                participantes[index].listaDesejos.push({desejo});    
             }
         }
         const addItem=await Grupo.update({_id},{$set:{participantes}});
         return response.json({status:true,msg:'Item adicionado com sucesso!'});
     },
     async deleteLista(request,response){
-        let{_id,desejo}=request.body; 
+        let{_id,idDesejo}=request.body; 
         const email = request.user.email;
         const GrupoRetorno = await Grupo.findOne({_id,participantes:{$elemMatch:{email}}});
         var participantes=GrupoRetorno.participantes;
         for (let index = 0; index < participantes.length; index++) {
             if(email==participantes[index].email){
-                participantes[index].listaDesejos.pull(desejo);    
+                participantes[index].listaDesejos.pull({_id:idDesejo});    
             }
         }
         const addItem=await Grupo.update({_id},{$set:{participantes}});

@@ -16,7 +16,9 @@ const GrupoSchema=new mongoose.Schema({
         email:String,
         dataNascimento:Date,
         status:Boolean,
-        listaDesejos:[String],
+        listaDesejos:[{
+            desejo:String
+        }],
         amigo:String
     }]
 });
