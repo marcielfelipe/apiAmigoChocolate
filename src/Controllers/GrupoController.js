@@ -235,7 +235,7 @@ module.exports={
         }
     },
     async deleteSorteio(request,response){
-        let{_id}=request.params;
+        let{_id}=request.body;
         const status = "Em Aberto";
         try {
             const GrupoRetorno=await Grupo.findOne({_id});
