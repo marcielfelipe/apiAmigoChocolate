@@ -10,6 +10,7 @@ const GrupoSchema=new mongoose.Schema({
     status:String,
     criadoPor:String,
     criadoEm:Date,
+    admin:String,
     participantes:[{
         _id:String,
         nome:String,
@@ -19,7 +20,7 @@ const GrupoSchema=new mongoose.Schema({
         listaDesejos:[{
             desejo:String
         }],
-        amigo:String
+        amigo:String,
     }]
 });
 GrupoSchema.plugin(mongoosePaginate);

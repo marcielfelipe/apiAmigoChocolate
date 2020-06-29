@@ -43,13 +43,14 @@ module.exports={
                     status:'Em Aberto',
                     criadoPor:nomeUser,
                     criadoEm: hoje,
+                    admin:email,
                     participantes:[{
                         _id,
                         nome:nomeUser,
                         email,
                         dataNascimento,
                         status:statusUser,
-                        amigo:''
+                        amigo:'',
                     }]
                     
                 });
