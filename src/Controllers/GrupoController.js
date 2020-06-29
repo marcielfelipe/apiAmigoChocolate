@@ -104,7 +104,8 @@ module.exports={
                 status:GrupoRetorno[index].status,
                 criadoPor:GrupoRetorno[index].criadoPor,
                 criadoEm:GrupoRetorno[index].criadoEm,
-                participantes:GrupoRetorno[index].participantes
+                participantes:GrupoRetorno[index].participantes,
+                admin:GrupoRetorno[index].admin
             }; 
         }
         return response.json(retorno);
